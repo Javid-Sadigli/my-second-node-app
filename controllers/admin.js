@@ -14,29 +14,46 @@ module.exports.POST_Add_Product = (req, res, next) => {
         price : req.body.price
     }
     Product.create(product).then((result) => {
-        ConsoleController.LOG_Created_Model('Product', product);
+        res.redirect('/admin/add-product');
     }).catch((err) => {
         console.log(err);
     });
-    res.redirect('/admin/add-product');
 };
+
 module.exports.GET_Products = (req, res, next) => {
-    Product.fetch_all((products) => {
+    Product.findAll().then((products) => {
         res.render('admin/products', {PageTitle : 'Products', products: products});
+    }).catch((err) => {
+        console.log(err);
     });
 };
 module.exports.POST_Delete_Product = (req, res, next) => {
     const productId = req.body.productId;
-    Product.delete_product_by_id(productId);
-    res.redirect('/admin/products');
+    Product.destroy({where : {id : productId}}).then(() => {
+        res.redirect('/admin/products');
+    }).catch((err) => {
+        console.log(err);
+    });
 };
 module.exports.GET_Edit_Product = (req, res, next) => {
     const productId = req.query.id;
-    Product.fetch_product_by_id(productId, (product) => {
+    Product.findByPk(productId).then((product) => {
         res.render('admin/edit-product', {PageTitle : 'Edit Product', product: product});
+    }).catch((err) => {
+        console.log(err);
     });
 };
 module.exports.POST_Edit_Product = (req, res, next) => {
-    Product.edit_product_by_id(req.body.id, req.body.title, req.body.description, req.body.image_link, req.body.price);
-    res.redirect('/admin/products');
+    Product.findByPk(req.body.id).then((product) => {
+        product.title = req.body.title;
+        product.description = req.body.description;
+        product.price = req.body.price;
+        product.image_link = req.body.image_link;
+        return product.save();
+    }).then(() => {
+        res.redirect('/admin/products');
+    }).catch((err) => {
+        console.log(err);
+        next();
+    });
 }
