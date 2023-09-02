@@ -11,6 +11,8 @@ const AdminRouter = require('./routes/admin');
 const ErrorController = require('./controllers/error');
 const ConsoleController = require('./controllers/console');
 const sequelize_database = require('./data/database');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -24,8 +26,31 @@ app.use('/', UserRouter);
 app.use('/admin', AdminRouter);
 app.use(ConsoleController.LOG_Not_Found);
 app.use(ErrorController.SEND_ERROR);
+app.use((req, res, next) => {
+    User.findByPk(1).then((user) => {
+        req.user = user;
+        next();
+    }).catch(err => {
+        console.log(err);
+    })
+});
+
+Product.belongsTo(User, {constraints : true, onDelete: "CASCADE"});
+User.hasMany(Product);
 
 sequelize_database.sync().then(result => {
+    return User.findByPk(1);
+}).then(user => {
+    if(!user)
+    {
+        return User.create({
+            username : "Javid Sadigli",
+            email : "cavidoffical@gmail.com",
+            password : "17032005Cc."
+        });
+    }
+    return user;
+}).then(user => {
     app.listen(port, hostname, () => {
         console.log(`\n\nServer succesfully started at ${hostname}:${port}\n`);
     });

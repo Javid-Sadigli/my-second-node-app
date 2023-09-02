@@ -13,7 +13,7 @@ module.exports.POST_Add_Product = (req, res, next) => {
         image_link : req.body.image_link, 
         price : req.body.price
     }
-    Product.create(product).then((result) => {
+    req.user.createProduct(product).then((result) => {
         res.redirect('/admin/add-product');
     }).catch((err) => {
         console.log(err);
@@ -56,4 +56,4 @@ module.exports.POST_Edit_Product = (req, res, next) => {
         console.log(err);
         next();
     });
-}
+};
