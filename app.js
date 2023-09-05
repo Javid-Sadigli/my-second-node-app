@@ -13,6 +13,8 @@ const ConsoleController = require('./controllers/console');
 const sequelize_database = require('./data/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Card = require('./models/card');
+const CardItem = require('./models/card-item');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -20,12 +22,6 @@ app.set('views', 'views');
 const BodyParser = require('body-parser');
 app.use(BodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(mainRoot, 'public')));
-app.use(ConsoleController.LOG_Request);
-
-app.use('/', UserRouter);
-app.use('/admin', AdminRouter);
-app.use(ConsoleController.LOG_Not_Found);
-app.use(ErrorController.SEND_ERROR);
 app.use((req, res, next) => {
     User.findByPk(1).then((user) => {
         req.user = user;
@@ -34,9 +30,19 @@ app.use((req, res, next) => {
         console.log(err);
     })
 });
+app.use(ConsoleController.LOG_Request);
+
+app.use('/', UserRouter);
+app.use('/admin', AdminRouter);
+app.use(ConsoleController.LOG_Not_Found);
+app.use(ErrorController.SEND_ERROR);
 
 Product.belongsTo(User, {constraints : true, onDelete: "CASCADE"});
 User.hasMany(Product);
+User.hasOne(Card);
+Card.belongsTo(User, {constraints : true, onDelete: "CASCADE"});
+Card.belongsToMany(Product, {through : CardItem});
+Product.belongsToMany(Card, {through : CardItem});
 
 sequelize_database.sync().then(result => {
     return User.findByPk(1);

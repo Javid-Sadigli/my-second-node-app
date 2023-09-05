@@ -7,13 +7,12 @@ module.exports.GET_Add_Product = (req, res, next) => {
 };
 
 module.exports.POST_Add_Product = (req, res, next) => {
-    const product = {
+    req.user.createProduct({
         title : req.body.title,
         description : req.body.description,
         image_link : req.body.image_link, 
         price : req.body.price
-    }
-    req.user.createProduct(product).then((result) => {
+    }).then((result) => {
         res.redirect('/admin/add-product');
     }).catch((err) => {
         console.log(err);
@@ -21,7 +20,7 @@ module.exports.POST_Add_Product = (req, res, next) => {
 };
 
 module.exports.GET_Products = (req, res, next) => {
-    Product.findAll().then((products) => {
+    req.user.getProducts().then((products) => {
         res.render('admin/products', {PageTitle : 'Products', products: products});
     }).catch((err) => {
         console.log(err);
@@ -37,7 +36,9 @@ module.exports.POST_Delete_Product = (req, res, next) => {
 };
 module.exports.GET_Edit_Product = (req, res, next) => {
     const productId = req.query.id;
-    Product.findByPk(productId).then((product) => {
+    req.user.getProducts({
+        where : {id : productId}
+    }).then(([product]) => {
         res.render('admin/edit-product', {PageTitle : 'Edit Product', product: product});
     }).catch((err) => {
         console.log(err);
