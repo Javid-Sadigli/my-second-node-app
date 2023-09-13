@@ -32,8 +32,22 @@ module.exports.GET_Product_Details = (req,res,next) => {
 };
 module.exports.POST_Add_To_Card = (req, res, next) => {
     const productId = req.params.productId;
-    
-    console.log(productId);
-
-    res.redirect('/card');
+    let MyCard;
+    req.user.getCard().then((card) => {
+        MyCard = card;
+        return card.getProducts({where : {id: productId}});
+    }).then((products) => {
+        const product = products[0];
+        if(product)
+        {
+            
+        }
+        return Product.findByPk(productId);
+    }).then((product) => {
+        return MyCard.addProduct(product, {through : {
+            amount : 1
+        }});
+    }).then(() => {
+        res.redirect('/card');
+    })
 };
