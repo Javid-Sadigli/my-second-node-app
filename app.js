@@ -57,6 +57,16 @@ sequelize_database.sync().then(result => {
     }
     return user;
 }).then(user => {
+    return user.getCard();
+}).then(card => {
+    if(card == null)
+    {
+        return Card.create({
+            userId : 1
+        });
+    }
+    return card;
+}).then(card => {
     app.listen(port, hostname, () => {
         console.log(`\n\nServer succesfully started at ${hostname}:${port}\n`);
     });

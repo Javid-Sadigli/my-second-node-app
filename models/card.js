@@ -7,6 +7,11 @@ const Card = sequelize_database.define('card', {
         autoIncrement : true,
         allowNull : false,
         primaryKey : true
+    },
+    totalPrice : {
+        type : Sequelize.DOUBLE,
+        allowNull : false,
+        defaultValue : 0
     }
 });
 
