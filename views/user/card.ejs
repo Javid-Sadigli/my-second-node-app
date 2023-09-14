@@ -33,6 +33,20 @@
                 <h1 class="page-title">No product in the card</h1>
             <% } %>    
         </section>
+        <section class="total-price-section">
+            <form class="total-price-form" method="post" action="/add-to-order">
+                <div class="total-price-h1-div">
+                    <h1 class="total-price-h1">
+                        Total Price : <%= totalPrice %> azn
+                    </h1>
+                </div>
+                <div class="total-price-button-div">
+                    <button class="total-price-button" type="submit">
+                        Order now!
+                    </button>
+                </div>
+            </form>
+        </section>
     </main>
 
 </body>

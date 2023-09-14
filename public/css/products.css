@@ -96,3 +96,28 @@
     align-items: center;
     gap: 5px;
 }
+.total-price-section{
+    margin-top: 50px;
+}
+.total-price-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.total-price-button{
+    width: 500px;
+    height: 50px;
+    border: 2px solid lightcoral;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 22px;
+    font-weight: 400;
+    color: lightcoral;
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+}
+.total-price-button:hover{
+    background-color: lightcoral;
+    color: white;
+    font-weight: 500;
+}

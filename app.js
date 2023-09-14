@@ -15,6 +15,8 @@ const Product = require('./models/product');
 const User = require('./models/user');
 const Card = require('./models/card');
 const CardItem = require('./models/card-item');
+const Order = require('./models/order');
+const OrderItem = require('./models/order-item');
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -43,6 +45,10 @@ User.hasOne(Card);
 Card.belongsTo(User, {constraints : true, onDelete: "CASCADE"});
 Card.belongsToMany(Product, {through : CardItem});
 Product.belongsToMany(Card, {through : CardItem});
+Order.belongsTo(User, {constraints : true, onDelete: "CASCADE"});
+User.hasMany(Order);
+Order.belongsToMany(Product, {through : OrderItem});
+Product.belongsToMany(Order, {through : OrderItem});
 
 sequelize_database.sync().then(result => {
     return User.findByPk(1);
