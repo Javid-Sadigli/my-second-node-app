@@ -33,6 +33,8 @@ module.exports.GET_Product_Details = (req,res,next) => {
 module.exports.POST_Add_To_Card = (req, res, next) => {
     const productId = req.params.productId;
     let MyCard;
+    let newAmount = 1;
+    let product_price;
     req.user.getCard().then((card) => {
         MyCard = card;
         return card.getProducts({where : {id: productId}});
@@ -40,14 +42,42 @@ module.exports.POST_Add_To_Card = (req, res, next) => {
         const product = products[0];
         if(product)
         {
-            
+            newAmount = product.cardItem.amount + 1;
         }
         return Product.findByPk(productId);
     }).then((product) => {
+        product_price = product.price;
         return MyCard.addProduct(product, {through : {
-            amount : 1
+            amount : newAmount
         }});
     }).then(() => {
+        MyCard.totalPrice += product_price;
+        MyCard.save();
+    }).then(() => {
         res.redirect('/card');
-    })
+    }).catch((err) => {
+        console.log(err);
+    });
+};
+module.exports.POST_Delete_From_Card = (req, res, next) => {
+    const productId = req.params.productId;
+    let product_price;
+    let MyCard;
+    req.user.getCard().then((card) => {
+        MyCard = card;
+        return card.getProducts({where : {
+            id : productId
+        }});
+    }).then((products) => {
+        const product = products[0];
+        product_price = product.price * product.cardItem.amount;
+        return product.cardItem.destroy();
+    }).then(() => {
+        MyCard.totalPrice -= product_price;
+        return MyCard.save();
+    }).then(() => {
+        res.redirect('/card');
+    }).catch((err) => {
+        console.log(err);
+    });
 };

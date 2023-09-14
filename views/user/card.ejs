@@ -14,7 +14,7 @@
                     <div class="product-card">
                         <div class="product-title-div">
                             <h1 class="product-title">
-                                <%= product.title %>
+                                <%= product.title %> (<%= product.cardItem.amount %>)
                             </h1>
                         </div>
                         <div class="product-image-div">
@@ -22,9 +22,9 @@
                                 <img src="<%= product.image_link %>" alt="<%= product.title %>">
                             </div>
                         </div>
-                        <form class="product-buttons" method="post">
+                        <form class="product-buttons" method="post" action="/delete-from-card/<%= product.id %>">
                             <a href="/product-details?id=<%= product.id %>" class="product-a">Details</a>
-                            <button type="submit" class="product-button">Add to Card</button>
+                            <button type="submit" class="product-delete-button">Delete</button>
                         </form>
                     </div>
                 <% } %>

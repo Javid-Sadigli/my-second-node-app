@@ -10,5 +10,6 @@ ROUTER.get('/orders', UserController.GET_Orders);
 ROUTER.get('/product-details', UserController.GET_Product_Details);
 
 ROUTER.post('/add-to-card/:productId', UserController.POST_Add_To_Card);
+ROUTER.post('/delete-from-card/:productId', UserController.POST_Delete_From_Card);
 
 module.exports = ROUTER;
